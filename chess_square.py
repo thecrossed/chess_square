@@ -9,6 +9,8 @@ import numpy as np
 import pandas as pd # pandas
 import csv
 import re
+import matplotlib
+import matplotlib.pyplot as plt
 
 
 # In[2]:
@@ -17,8 +19,7 @@ import re
 # 棋谱数据
 # 切割每一局棋谱，得each_move
 # 从每局的each_move list，提取square list
-# 建 dict key(square) : value (count)
-# 建新表， columns a,b,c,d,e,f,g,h；每一列为square occupied count
+# 建 dict key(square) : value (count); 将值normalized
 # 画图
 
 
@@ -96,22 +97,7 @@ def square(chess_moves):
     return squares
 chess_moves['square'] = chess_moves.apply(square, axis=1)
 
-                if m == 'O-O':
-                    if chess_moves['each_move'].index(m)%2 == 0:
-                        squares.append('g1')
-                        squares.append('f1')
-                    elif chess_moves['each_move'].index(m)%2 == 1:
-                        squares.append('g8')
-                        squares.append('f8')
-                elif m == 'O-O-O':  
-                    if chess_moves['each_move'].index(m)%2 == 0:
-                        squares.append('c1')
-                        squares.append('d1')
-                    elif chess_moves['each_move'].index(m)%2 == 1:
-                        squares.append('c8')
-                        squares.append('d8')  
-                else:
-                    squares.append(m[-3:-1])
+
 # In[10]:
 
 
@@ -127,12 +113,87 @@ for s in chess_moves['square']:
     for i in s:
         sq_count[i] = sq_count.get(i, 0) + 1
 
-for i in chess_moves['each_move']:
-    for d in i:
-        if '=' in d:
-            print (d)
+
+# In[12]:
+
+
+# normalize value
+def normalize(d, target=1.0):
+   raw = sum(d.values())
+   factor = target/raw
+   return {key:round(value*factor*100,2) for key,value in d.items()}
+sq_norm = normalize(sq_count)
+
+
+# In[13]:
+
+
+letter = ['a','b','c','d','e','f','g','h']
+eight = []
+for k in letter: 
+    eight.append(sq_norm[k+'8'])
+    
+sev = []
+for k in letter: 
+    sev.append(sq_norm[k+'7'])
+    
+six = []
+for k in letter: 
+    six.append(sq_norm[k+'6'])
+    
+fiv = []
+for k in letter: 
+    fiv.append(sq_norm[k+'5'])
+    
+four = []
+for k in letter: 
+    four.append(sq_norm[k+'4'])
+    
+thr = []
+for k in letter: 
+    thr.append(sq_norm[k+'3'])
+    
+two = []
+for k in letter: 
+    two.append(sq_norm[k+'2'])
+    
+one = []
+for k in letter: 
+    one.append(sq_norm[k+'1'])
+
+
 # In[14]:
 
 
-sq_count
+# 画图
+number = ["8","7", "6", "5", "4",
+              "3", "2", "1"]
+alphabet = ["a", "b", "c",
+           "d", "e", "f", "g","h"]
+board = np.array([eight,sev,six,fiv,four,thr,two,one])
+
+
+fig, ax = plt.subplots()
+im = ax.imshow(board)
+
+# We want to show all ticks...
+ax.set_xticks(np.arange(len(alphabet)))
+ax.set_yticks(np.arange(len(number)))
+# ... and label them with the respective list entries
+ax.set_xticklabels(alphabet)
+ax.set_yticklabels(number)
+
+# Rotate the tick labels and set their alignment.
+plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+         rotation_mode="anchor")
+# Loop over data dimensions and create text annotations.
+for i in range(len(number)):
+    for j in range(len(alphabet)):
+        text = ax.text(j, i, board[i, j],
+                       ha="center", va="center", color="w")
+
+ax.set_title("square occupied frequency(normalized)")
+fig.tight_layout()
+plt.show()
+fig.savefig('chess_square.png')
 
