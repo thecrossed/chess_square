@@ -28,3 +28,6 @@ read my code from chess_square.py; or
 get the data from games.csv.
 
 Hooya!
+
+And here is my notebook on Kaggle
+https://www.kaggle.com/thecrossed/chess-square-occupied
