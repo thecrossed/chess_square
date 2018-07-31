@@ -1,9 +1,6 @@
 
 # coding: utf-8
 
-# In[1]:
-
-
 # https://www.kaggle.com/datasnaek/chess
 import numpy as np
 import pandas as pd # pandas
@@ -12,45 +9,21 @@ import re
 import matplotlib
 import matplotlib.pyplot as plt
 
-
-# In[2]:
-
-
 # Steps
-# Step 1 extract moves from each game
-# Step 2 turn move string into a new column
-# Step 3 extract occupied squares from moves in each game
-# Step 4 build a dictionary and store frequency of square occupied as values (normalized)
-# Step 5 draw a board and visualize data
-
-
-# In[3]:
-
+#  1 extract moves from each game
+#  2 turn move string into a new column
+#  3 extract occupied squares from moves in each game
+#  4 build a dictionary and store frequency of square occupied as values (normalized)
+#  5 draw a board and visualize data
 
 chess = pd.read_csv('games.csv')
 
-
-# In[4]:
-
-
 chess.head()
-
-
-# In[5]:
-
 
 # extract moves from each game
 chess_moves = chess[['moves']].copy()
 
-
-# In[6]:
-
-
 chess_moves.head()
-
-
-# In[7]:
-
 
 # Step 2 turn move string into a new column each_move
 def each_move(chess_moves):
@@ -59,15 +32,7 @@ def each_move(chess_moves):
     return each
 chess_moves['each_move'] = chess_moves.apply(each_move, axis=1)
 
-
-# In[8]:
-
-
 chess_moves.head()
-
-
-# In[9]:
-
 
 # Step 3 extract occupied squares from moves in each game
 def square(chess_moves):
@@ -98,15 +63,7 @@ def square(chess_moves):
     return squares
 chess_moves['square'] = chess_moves.apply(square, axis=1)
 
-
-# In[10]:
-
-
 chess_moves.head()
-
-
-# In[11]:
-
 
 # Step 4 build a dictionary and store frequency of square occupied as values (normalized)
 sq_count = {}
@@ -114,20 +71,12 @@ for s in chess_moves['square']:
     for i in s:
         sq_count[i] = sq_count.get(i, 0) + 1
 
-
-# In[12]:
-
-
 # normalize value
 def normalize(d, target=1.0):
    raw = sum(d.values())
    factor = target/raw
    return {key:round(value*factor*100,2) for key,value in d.items()}
 sq_norm = normalize(sq_count)
-
-
-# In[13]:
-
 
 letter = ['a','b','c','d','e','f','g','h']
 eight = []
@@ -161,16 +110,6 @@ for k in letter:
 one = []
 for k in letter: 
     one.append(sq_norm[k+'1'])
-
-
-# In[14]:
-
-
-sq_norm
-
-
-# In[15]:
-
 
 # turn dictionary values into lists, for data visualization in next steps
 letter = ['a','b','c','d','e','f','g','h']
@@ -206,17 +145,12 @@ one = []
 for k in letter: 
     one.append(sq_norm[k+'1'])
 
-
-# In[16]:
-
-
 # Step 5 draw a board and visualize data
 number = ["8","7", "6", "5", "4",
               "3", "2", "1"]
 alphabet = ["a", "b", "c",
            "d", "e", "f", "g","h"]
 board = np.array([eight,sev,six,fiv,four,thr,two,one])
-
 
 fig, ax = plt.subplots()
 im = ax.imshow(board)
