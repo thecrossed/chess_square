@@ -16,11 +16,12 @@ import matplotlib.pyplot as plt
 # In[2]:
 
 
-# 棋谱数据
-# 切割每一局棋谱，得each_move
-# 从每局的each_move list，提取square list
-# 建 dict key(square) : value (count); 将值normalized
-# 画图
+# Steps
+# Step 1 extract moves from each game
+# Step 2 turn move string into a new column
+# Step 3 extract occupied squares from moves in each game
+# Step 4 build a dictionary and store frequency of square occupied as values (normalized)
+# Step 5 draw a board and visualize data
 
 
 # In[3]:
@@ -38,7 +39,7 @@ chess.head()
 # In[5]:
 
 
-# 棋谱数据
+# extract moves from each game
 chess_moves = chess[['moves']].copy()
 
 
@@ -51,7 +52,7 @@ chess_moves.head()
 # In[7]:
 
 
-# 切割每一局棋谱，得each_move list
+# Step 2 turn move string into a new column each_move
 def each_move(chess_moves):
     each = (chess_moves['moves']).split(' ')
 
@@ -68,7 +69,7 @@ chess_moves.head()
 # In[9]:
 
 
-# 从每局的each_move list，提取square list
+# Step 3 extract occupied squares from moves in each game
 def square(chess_moves):
     squares = []
     for m in chess_moves['each_move']:
@@ -107,7 +108,7 @@ chess_moves.head()
 # In[11]:
 
 
-# 建 dict key(square) : value (count)
+# Step 4 build a dictionary and store frequency of square occupied as values (normalized)
 sq_count = {}
 for s in chess_moves['square']:
     for i in s:
@@ -165,7 +166,51 @@ for k in letter:
 # In[14]:
 
 
-# 画图
+sq_norm
+
+
+# In[15]:
+
+
+# turn dictionary values into lists, for data visualization in next steps
+letter = ['a','b','c','d','e','f','g','h']
+eight = []
+for k in letter: 
+    eight.append(sq_norm[k+'8'])
+    
+sev = []
+for k in letter: 
+    sev.append(sq_norm[k+'7'])
+    
+six = []
+for k in letter: 
+    six.append(sq_norm[k+'6'])
+    
+fiv = []
+for k in letter: 
+    fiv.append(sq_norm[k+'5'])
+    
+four = []
+for k in letter: 
+    four.append(sq_norm[k+'4'])
+    
+thr = []
+for k in letter: 
+    thr.append(sq_norm[k+'3'])
+    
+two = []
+for k in letter: 
+    two.append(sq_norm[k+'2'])
+    
+one = []
+for k in letter: 
+    one.append(sq_norm[k+'1'])
+
+
+# In[16]:
+
+
+# Step 5 draw a board and visualize data
 number = ["8","7", "6", "5", "4",
               "3", "2", "1"]
 alphabet = ["a", "b", "c",
@@ -195,5 +240,4 @@ for i in range(len(number)):
 ax.set_title("square occupied frequency(normalized)")
 fig.tight_layout()
 plt.show()
-fig.savefig('chess_square.png')
 
